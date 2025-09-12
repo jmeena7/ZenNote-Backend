@@ -9,35 +9,46 @@ const notesRoutes = require('./routes/notes');
 // Load .env file
 dotenv.config({ path: path.join(__dirname, '.env') });
 
+// ✅ Check env variables
 console.log('🔑 JWT_SECRET:', process.env.JWT_SECRET);
 console.log('🌐 MONGO_URL:', process.env.MONGO_URL);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Allowed frontend origins
+// ✅ Allowed frontend origins
 const allowedOrigins = [
-  'http://localhost:3000',
-  'https://zennotef.netlify.app'
+    'http://localhost:3000',        // ✅ add this for your local frontend
+    'http://localhost:3001', 
+    'https://zennotef.netlify.app'   // ✅ your deployed frontend
 ];
 
+// ✅ CORS setup
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true); // allow non-browser requests like Postman
+    if(allowedOrigins.indexOf(origin) !== -1){
+      callback(null, true);
+    } else {
+      callback(new Error('🚫 CORS error: Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
+// ✅ Parse JSON
 app.use(express.json());
 
-// Routes
+// ✅ API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', notesRoutes);
 
-// Health check
+// ✅ Health check route
 app.get('/', (req, res) => {
   res.send('✅ Zennote backend running...');
 });
 
-// MongoDB connection
+// ✅ Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL)
   .then(() => {
     console.log('✅ Connected to MongoDB');

@@ -18,15 +18,16 @@ const PORT = process.env.PORT || 5000;
 
 // ✅ CORS setup
 const allowedOrigins = [
-  'http://localhost:3000', 
-  'https://zennote-backend-production.up.railway.app'
+  'http://localhost:3000',                   // local frontend
+  'https://zennotef.netlify.app',           // deployed frontend
+  'https://zennote-backend-production.up.railway.app' // backend itself
 ];
 
 app.use(cors({
   origin: function(origin, callback){
-    if(!origin) return callback(null, true);
+    if(!origin) return callback(null, true); // Postman or non-browser request
     if(allowedOrigins.indexOf(origin) === -1){
-      const msg = `🚫 CORS error: The CORS policy for this site does not allow access from the specified Origin.`;
+      const msg = `🚫 CORS error: The CORS policy does not allow access from this origin.`;
       return callback(new Error(msg), false);
     }
     return callback(null, true);

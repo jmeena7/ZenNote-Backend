@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const fetchUser = require('../middleware/fetchusar'); // ✅ correct name
+const fetchUser = require('../middleware/fetchUser'); // ✅ spelling corrected to 'fetchuser'
 const Note = require('../models/Note');
 
-// 📌 GET all notes – Protected
+// ✅ GET all notes – Protected
 router.get('/', fetchUser, async (req, res) => {
   try {
     const notes = await Note.find({ user: req.user.id });
@@ -14,7 +14,7 @@ router.get('/', fetchUser, async (req, res) => {
   }
 });
 
-// 📌 POST new note – Protected
+// ✅ POST new note – Protected
 router.post('/', fetchUser, async (req, res) => {
   const { title, description, tag } = req.body;
 
@@ -38,14 +38,13 @@ router.post('/', fetchUser, async (req, res) => {
   }
 });
 
-// 📌 PUT update note – Protected
+// ✅ PUT update note – Protected
 router.put('/:id', fetchUser, async (req, res) => {
   const { title, description, tag } = req.body;
 
   try {
     let note = await Note.findById(req.params.id);
     if (!note) {
-      console.warn(`⚠️ Note not found for ID: ${req.params.id}`);
       return res.status(404).json({ error: 'Note not found' });
     }
 
@@ -64,20 +63,19 @@ router.put('/:id', fetchUser, async (req, res) => {
       { new: true }
     );
 
-    res.json(updatedNote); // ✅ Send updated note directly
+    res.json(updatedNote);
   } catch (error) {
     console.error('❌ Error updating note:', error.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-// 📌 DELETE note – Protected
+// ✅ DELETE note – Protected
 router.delete('/:id', fetchUser, async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);
 
     if (!note) {
-      console.warn(`⚠️ Cannot delete — note not found for ID: ${req.params.id}`);
       return res.status(404).json({ error: 'Note not found' });
     }
 

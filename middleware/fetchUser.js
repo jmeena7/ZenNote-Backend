@@ -2,10 +2,9 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const path = require('path');
 
-// ✅ Explicitly load .env from backend root folder
+// Load .env
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
-// ✅ Middleware function to authenticate token
 const fetchUser = (req, res, next) => {
     console.log('🔐 JWT_SECRET in fetchUser:', process.env.JWT_SECRET);
 
@@ -19,13 +18,8 @@ const fetchUser = (req, res, next) => {
         return res.status(500).json({ error: 'Internal server error' });
     }
 
-    const secret = process.env.JWT_SECRET;
-
     try {
-        const decoded = jwt.verify(token, secret);
-        if (!decoded || !decoded.user) {
-            return res.status(401).json({ error: 'Invalid token payload' });
-        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded.user;
         next();
     } catch (err) {
